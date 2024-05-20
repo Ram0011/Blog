@@ -18,10 +18,7 @@ const secret = process.env.SECRET;
 app.use(
     cors({
         credentials: true,
-        origin: [
-            "https://bejewelled-speculoos-273f33.netlify.app",
-            "http://localhost:3000",
-        ],
+        origin: ["https://my-blog-ram.vercel.app", "http://localhost:3000"],
 
         methods: ["GET", "POST", "PUT", "DELETE"],
     })
