@@ -89,7 +89,7 @@ app.post("/login", async (req, res) => {
                     }
                     res.cookie("token", token, {
                         httpOnly: true,
-                        sameSite: "Lax",
+                        sameSite: "None",
                         secure: true,
                     }).json({
                         id: userDoc._id,
@@ -123,7 +123,11 @@ app.get("/profile", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-    res.cookie("token", "", { sameSite: "Lax", secure: true }).json("ok");
+    res.cookie("token", "", {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+    }).json("ok");
 });
 
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
