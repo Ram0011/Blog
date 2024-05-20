@@ -19,7 +19,6 @@ app.use(
     cors({
         credentials: true,
         origin: ["https://my-blog-ram.vercel.app", "http://localhost:3000"],
-
         methods: ["GET", "POST", "PUT", "DELETE"],
     })
 );
@@ -88,7 +87,11 @@ app.post("/login", async (req, res) => {
                             .status(500)
                             .json({ err: "Token generation failed" });
                     }
-                    res.cookie("token", token, { httpOnly: true }).json({
+                    res.cookie("token", token, {
+                        httpOnly: true,
+                        sameSite: "Lax",
+                        secure: true,
+                    }).json({
                         id: userDoc._id,
                         username,
                     });
@@ -109,14 +112,18 @@ app.get("/profile", (req, res) => {
             .status(401)
             .json({ error: "Unauthorized - JWT must be provided" });
     }
-    jwt.verify(token, secret, {}, (err, info) => {
-        if (err) throw err;
+    jwt.verify(token, secret, (err, info) => {
+        if (err) {
+            return res
+                .status(401)
+                .json({ error: "Unauthorized - Invalid JWT" });
+        }
         res.json(info);
     });
 });
 
 app.post("/logout", (req, res) => {
-    res.cookie("token", "").json("ok");
+    res.cookie("token", "", { sameSite: "Lax", secure: true }).json("ok");
 });
 
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
@@ -127,8 +134,11 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     fs.renameSync(path, newPath);
 
     const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
+    jwt.verify(token, secret, async (err, info) => {
+        if (err)
+            return res
+                .status(401)
+                .json({ error: "Unauthorized - Invalid JWT" });
         const { title, summary, content } = req.body;
         const postDoc = await Post.create({
             title,
@@ -152,14 +162,16 @@ app.put("/post", uploadMiddleware.single("file"), (req, res) => {
     }
 
     const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
+    jwt.verify(token, secret, async (err, info) => {
+        if (err)
+            return res
+                .status(401)
+                .json({ error: "Unauthorized - Invalid JWT" });
         const { id, title, summary, content } = req.body;
         const postDoc = await Post.findById(id);
-        const isAuthor =
-            JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        const isAuthor = postDoc.author.toString() === info.id.toString();
         if (!isAuthor) {
-            return res.status(400).json("you are not the author");
+            return res.status(400).json({ error: "You are not the author" });
         }
         await postDoc.updateOne({
             title,
@@ -172,12 +184,11 @@ app.put("/post", uploadMiddleware.single("file"), (req, res) => {
 });
 
 app.get("/post", async (req, res) => {
-    res.json(
-        await Post.find()
-            .populate("author", ["username"])
-            .sort({ createdAt: -1 })
-            .limit(20)
-    );
+    const posts = await Post.find()
+        .populate("author", ["username"])
+        .sort({ createdAt: -1 })
+        .limit(20);
+    res.json(posts);
 });
 
 app.get("/post/:id", async (req, res) => {
@@ -192,7 +203,7 @@ app.get("/test", (req, res) => {
 });
 
 //server running
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
 });
