@@ -87,10 +87,11 @@ app.post("/login", async (req, res) => {
                             .status(500)
                             .json({ err: "Token generation failed" });
                     }
+                    const isProduction = process.env.NODE_ENV === "production";
                     res.cookie("token", token, {
                         httpOnly: true,
                         sameSite: "None",
-                        secure: true,
+                        secure: isProduction,
                     }).json({
                         id: userDoc._id,
                         username,
