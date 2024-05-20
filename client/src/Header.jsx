@@ -26,11 +26,12 @@ export default function Header() {
                 }
             );
 
-            if (response.ok) {
+            if (response.status === 200) {
                 // Logout successful on the server side
                 alert("Logged out");
                 setUserInfo(null);
                 window.location.reload();
+                return;
             } else {
                 // Handle other cases, e.g., response.status !== 200
                 console.error("Logout failed");
