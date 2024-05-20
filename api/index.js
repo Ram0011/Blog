@@ -126,9 +126,9 @@ app.get("/profile", (req, res) => {
 app.post("/logout", (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
-        sameSite: "None",
         secure: true,
-    }).json("ok");
+        sameSite: "None",
+    }).json({ message: "Logged out!" });
 });
 
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {

@@ -31,7 +31,6 @@ export default function Header() {
                 alert("Logged out");
                 setUserInfo(null);
                 window.location.reload();
-                return;
             } else {
                 // Handle other cases, e.g., response.status !== 200
                 console.error("Logout failed");
