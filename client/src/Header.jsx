@@ -19,14 +19,14 @@ export default function Header() {
     async function logout() {
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_RENDERT}/logout`,
+                `${process.env.REACT_APP_RENDER}/logout`,
                 {
                     credentials: "include",
                     method: "POST",
                 }
             );
 
-            if (response.status === 200) {
+            if (response.ok) {
                 // Logout successful on the server side
                 alert("Logged out");
                 setUserInfo(null);
