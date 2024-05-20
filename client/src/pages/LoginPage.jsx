@@ -13,7 +13,7 @@ export default function LoginPage() {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_API_HOST}/login`,
+                `${process.env.REACT_APP_RENDER}/login`,
                 {
                     method: "POST",
                     body: JSON.stringify({ username, password }),

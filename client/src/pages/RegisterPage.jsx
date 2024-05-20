@@ -8,7 +8,7 @@ export default function RegisterPage() {
         try {
             ev.preventDefault();
             const response = await fetch(
-                `${process.env.REACT_APP_API_HOST}/register`,
+                `${process.env.REACT_APP_RENDER}/register`,
                 {
                     method: "POST",
                     body: JSON.stringify({ username, password }),

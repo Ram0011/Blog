@@ -10,13 +10,11 @@ export default function PostPage() {
 
     const { id } = useParams();
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_HOST}/post/${id}`).then(
-            (response) => {
-                response.json().then((postInfo) => {
-                    setPostInfo(postInfo);
-                });
-            }
-        );
+        fetch(`${process.env.REACT_APP_RENDER}/post/${id}`).then((response) => {
+            response.json().then((postInfo) => {
+                setPostInfo(postInfo);
+            });
+        });
     }, [id]);
 
     if (!postInfo) return "";
@@ -53,7 +51,7 @@ export default function PostPage() {
             )}
             <div className="image">
                 <img
-                    src={`${process.env.REACT_APP_API_HOST}/${postInfo.cover}`}
+                    src={`${process.env.REACT_APP_RENDER}/${postInfo.cover}`}
                     alt=""
                 />
             </div>

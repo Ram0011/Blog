@@ -7,7 +7,7 @@ export default function Header() {
     const { setUserInfo, userInfo } = useContext(UserContext);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_HOST}/profile`, {
+        fetch(`${process.env.REACT_APP_RENDER}/profile`, {
             credentials: "include",
         }).then((response) => {
             response.json().then((userInfo) => {
@@ -19,7 +19,7 @@ export default function Header() {
     async function logout() {
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_API_HOST}/logout`,
+                `${process.env.REACT_APP_RENDERT}/logout`,
                 {
                     credentials: "include",
                     method: "POST",
